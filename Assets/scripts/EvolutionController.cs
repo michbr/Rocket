@@ -8,6 +8,10 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	public Transform startPosition;
 
 	public float evaluationTime = 60;
+
+	public FlightWaypoint wayPointPrefab;
+	public int wayPoints;
+
 	private float evaluationStartTime = 0;
 	private Population population;
 	private NeuralNet net;
@@ -27,6 +31,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		net = new NeuralNet(NeuronMode.NEURON, true, flightController.thrusters + 3 + 3 + 4, flightController.thrusters, (flightController.thrusters + 3 + 3 + 4) * 2, 2);
 		population = new Population(this, net, 50, .03, .3, .7);
 		evaluationStartTime = Time.time;
+		generateWaypoints(wayPoints, new Vector3(128, 128, 128));
 		flightController.setTarget(flightPath[0].transform.position);
 		flightController.enableAI(net);
 	}
@@ -38,6 +43,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		if (Input.GetButtonUp("BEST")) {
 			playBest = true;
 		}
+
 		
 		if (Time.time - evaluationStartTime > evaluationTime) {
 			if (playBest) {
@@ -83,6 +89,26 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		}
 	}
 
+	private void generateWaypoints(int number, Vector3 maxVals) {
+		//if (flightPath == null || flightPath.Count < 1) {
+		flightPath.Clear();
+			for (int i = 0; i < number; i++) {
+				System.Random random = GlobalRandom.getInstance().getRandom();
+				float x = (float)random.NextDouble() * maxVals.x - (float)random.NextDouble() * maxVals.x;
+				float y = (float)random.NextDouble() * maxVals.y - (float)random.NextDouble() * maxVals.y;
+				float z = (float)random.NextDouble() * maxVals.z - (float)random.NextDouble() * maxVals.z;
+				FlightWaypoint waypoint = GameObject.Instantiate(wayPointPrefab, new Vector3(x, y, z), Quaternion.identity) as FlightWaypoint;
+				flightPath.Add(waypoint);
+			}
+		//}
+	}
+
+	private void clearWaypoints() {
+		foreach (FlightWaypoint waypoint in flightPath) {
+			Destroy(waypoint.gameObject);
+		}
+	}
+
 	private void reset() {
 		flightController.transform.position = startPosition.position;
 		flightController.transform.rotation = Quaternion.identity;
@@ -95,6 +121,8 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	}
 
 	private void resetGeneration() {
+		clearWaypoints();
+		generateWaypoints(wayPoints, new Vector3(64, 64, 64));
 		cumulativeFitness = 0;
 		totalFitness = 0;
 		currentChromosomeIndex = 0;
