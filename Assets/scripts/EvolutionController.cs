@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
+using System.IO;
 
 public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
@@ -11,7 +11,6 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 	public FlightWaypoint wayPointPrefab;
 	public int wayPoints;
-
 	private float evaluationStartTime = 0;
 	private Population population;
 	private NeuralNet net;
@@ -23,17 +22,17 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	private int currentChromosomeIndex = 0;
 	private double totalFitness = 0;
 
-	private Chromosome best;
-	private double bestFitness = 0;
 	private bool playBest = false;
+
+	private BestEntry currentBest;
+	private List<BestEntry> bests = new List<BestEntry>();
 	
 	void Start() { 
 		net = new NeuralNet(NeuronMode.NEURON, true, flightController.thrusters + 3 + 3 + 4, flightController.thrusters, (flightController.thrusters + 3 + 3 + 4) * 2, 2);
 		population = new Population(this, net, 50, .03, .3, .7);
-		evaluationStartTime = Time.time;
 		generateWaypoints(wayPoints, new Vector3(128, 128, 128));
-		flightController.setTarget(flightPath[0].transform.position);
 		flightController.enableAI(net);
+		reset();
 	}
 
 	void Update() {
@@ -43,24 +42,18 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		if (Input.GetButtonUp("BEST")) {
 			playBest = true;
 		}
-
 		
 		if (Time.time - evaluationStartTime > evaluationTime) {
 			if (playBest) {
 				playBest = false;
-				net.setWeights(new Queue<double>(best.getWeights()));
-				flightController.setTarget(flightPath[currentWaypoint].transform.position);
+				net.setWeights(new Queue<double>(currentBest.getWeights()));
 				reset();
-				print("Replaying best solution, fitness: " + best.getFitness());
+				print("Replaying best solution. Found in generation " + currentBest.getGeneration() + " fitness: " + currentBest.getFitnessScore());
 			}
 			else if (currentChromosomeIndex < population.getChromosomes().Count - 1) {
 				evaluateFitness(population.getChromosomes()[currentChromosomeIndex]);
 				totalFitness += population.getChromosomes()[currentChromosomeIndex].getFitness();
 				++currentChromosomeIndex;
-				if (currentWaypoint < flightPath.Count) {
-					flightController.setTarget(flightPath[currentWaypoint].transform.position);
-				}
-				net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
 				reset();
 			} else {
                 evaluateFitness(population.getChromosomes()[currentChromosomeIndex]);
@@ -71,12 +64,25 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 				population.spawnGeneration();
 				resetGeneration();
 				reset();
-				net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-
-
 			}
 		}
 	}
+
+	void OnApplicationQuit() {
+		Stream stream = File.Create("RocketData.dat");
+		StreamWriter writer = new StreamWriter(stream);
+
+		// write entry data
+		foreach (BestEntry entry in bests) {
+			writer.Write(entry.toString() + '\n');
+		}
+
+		print("writing out rocket entries");
+		// write rocket data
+		writer.Flush();
+		stream.Close();
+	}
+
 
 	public void waypointReached() {
 		print("Waypoint reached!!!");
@@ -84,6 +90,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		++currentWaypoint;
 		if (currentWaypoint < flightPath.Count) {
 			flightPath[currentWaypoint].activate(this);
+			flightController.setTarget(flightPath[currentWaypoint].transform.position);
 		} else {
 			cumulativeFitness += 1 -  ((Time.time - evaluationStartTime) / (evaluationTime));
 		}
@@ -116,7 +123,10 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 		currentWaypoint = 0;
 		flightPath[0].activate(this);
+		flightController.setTarget(flightPath[0].transform.position);
+
 		evaluationStartTime = Time.time;
+		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
 
 	}
 
@@ -135,11 +145,12 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		} else {
 			chromosome.setFitness(cumulativeFitness);
 		}
-		if (chromosome.getFitness() > bestFitness) {
+		if (currentBest == null || chromosome.getFitness() > currentBest.getFitnessScore()) {
+
 			print("recording best fitness as: " + chromosome.getFitness());
-			best = chromosome;
-			bestFitness = chromosome.getFitness();
+			BestEntry newBest = new BestEntry(population.getCurrentGenerationNumber(), new List<double>(chromosome.getWeights()), chromosome.getFitness());
+			currentBest = newBest;
+			bests.Add(newBest);
 		}
 	}
-
 }

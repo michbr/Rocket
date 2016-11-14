@@ -11,7 +11,6 @@ public class FlightWaypoint : MonoBehaviour {
 		this.target = controller.gameObject;
 		this.controller = controller;
 		active = true;
-		print("activating " + name);
 	}
 
 	void OnTriggerEnter(Collider other) {
@@ -20,5 +19,4 @@ public class FlightWaypoint : MonoBehaviour {
 			active = false;
 		}
 	}
-
 }

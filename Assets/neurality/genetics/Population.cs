@@ -63,6 +63,10 @@ public class Population  {
 		chromosomes = newPopulation;
 	}
 
+	public int getCurrentGenerationNumber() {
+		return generationCount;
+	}
+
 	private void evaluatePopulationFitness() {
 		totalFitness = 0;
 		foreach (Chromosome chromosome in chromosomes) {
