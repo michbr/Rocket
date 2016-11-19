@@ -8,9 +8,12 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	public Transform startPosition;
 
 	public float evaluationTime = 60;
+	public int wayPoints;
+	public bool autoGeneratePath = true;
+
 
 	public FlightWaypoint wayPointPrefab;
-	public int wayPoints;
+
 	private float evaluationStartTime = 0;
 	private Population population;
 	private NeuralNet net;
@@ -30,7 +33,9 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	void Start() { 
 		net = new NeuralNet(NeuronMode.NEURON, true, flightController.thrusters + 3 + 3 + 4, flightController.thrusters, (flightController.thrusters + 3 + 3 + 4) * 2, 2);
 		population = new Population(this, net, 50, .03, .3, .7);
-		generateWaypoints(wayPoints, new Vector3(128, 128, 128));
+		if (autoGeneratePath) {
+			generateWaypoints(wayPoints, new Vector3(128, 128, 128));
+		}
 		flightController.enableAI(net);
 		reset();
 	}
@@ -97,9 +102,8 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	}
 
 	private void generateWaypoints(int number, Vector3 maxVals) {
-		//if (flightPath == null || flightPath.Count < 1) {
 		flightPath.Clear();
-			for (int i = 0; i < number; i++) {
+		for (int i = 0; i < number; i++) {
 				System.Random random = GlobalRandom.getInstance().getRandom();
 				float x = (float)random.NextDouble() * maxVals.x - (float)random.NextDouble() * maxVals.x;
 				float y = (float)random.NextDouble() * maxVals.y - (float)random.NextDouble() * maxVals.y;
@@ -107,7 +111,6 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 				FlightWaypoint waypoint = GameObject.Instantiate(wayPointPrefab, new Vector3(x, y, z), Quaternion.identity) as FlightWaypoint;
 				flightPath.Add(waypoint);
 			}
-		//}
 	}
 
 	private void clearWaypoints() {
@@ -127,13 +130,14 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 		evaluationStartTime = Time.time;
 		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-
+		cumulativeFitness = 0;
 	}
 
 	private void resetGeneration() {
-		clearWaypoints();
-		generateWaypoints(wayPoints, new Vector3(64, 64, 64));
-		cumulativeFitness = 0;
+		if (autoGeneratePath) {
+			clearWaypoints();
+			generateWaypoints(wayPoints, new Vector3(64, 64, 64));
+		}
 		totalFitness = 0;
 		currentChromosomeIndex = 0;
 
