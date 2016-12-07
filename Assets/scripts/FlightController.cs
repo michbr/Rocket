@@ -90,10 +90,10 @@ public class FlightController : MonoBehaviour {
 		currentThrusterSettings.Add(transform.rotation.z);
 		currentThrusterSettings.Add(transform.rotation.w);
 
-		foreach (ThrusterController thruster in thrusterControllers) {
+		//foreach (ThrusterController thruster in thrusterControllers) {
 			//print("add thruster value: " + thruster.throttle);
-			currentThrusterSettings.Add(thruster.throttle);
-		}
+			//currentThrusterSettings.Add(thruster.throttle);
+		//}
 		brain.setInputs(currentThrusterSettings);
 	}
 

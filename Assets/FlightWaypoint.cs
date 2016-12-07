@@ -11,12 +11,15 @@ public class FlightWaypoint : MonoBehaviour {
 		this.target = controller.gameObject;
 		this.controller = controller;
 		active = true;
+		
+		GetComponent<MeshRenderer>().material.color = Color.green;
 	}
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject == target && active) {
 			controller.waypointReached();
 			active = false;
+			GetComponent<Material>().color = Color.red;
 		}
 	}
 }

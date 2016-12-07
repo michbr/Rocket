@@ -43,16 +43,13 @@ public class ThrusterController : MonoBehaviour {
 		Color color = particleControl.startColor;
 		color.a = throttle;
 		particleControl.startColor = color;
-
+		if (isFiring) {
+			Debug.DrawLine(transform.position, transform.position + (-(transform.up * (thrustForce * throttle))), Color.blue);
+		}
 	}
 
 	void FixedUpdate() {
 		if (isFiring) {
-			//print("drawing line from " + transform.TransformPoint(transform.localPosition) + " to " + (transform.TransformPoint(transform.localPosition) + ((transform.up * (thrustForce * throttle)))));
-			//Debug.DrawLine(location, transform.position, Color.blue);
-
-			//Debug.DrawLine(location, location + ((transform.up * (thrustForce * throttle))), Color.blue);
-			Debug.DrawLine(transform.position, transform.position + (-(transform.up * (thrustForce * throttle))), Color.blue);
 			targetRigidBody.AddForceAtPosition(transform.up * (thrustForce * throttle), transform.position);
 		}
 	}

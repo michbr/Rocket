@@ -29,9 +29,11 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 	private BestEntry currentBest;
 	private List<BestEntry> bests = new List<BestEntry>();
+
+	private float closestDistance = 0f;
 	
 	void Start() { 
-		net = new NeuralNet(NeuronMode.NEURON, true, flightController.thrusters + 3 + 3 + 4, flightController.thrusters, (flightController.thrusters + 3 + 3 + 4) * 2, 2);
+		net = new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, flightController.thrusters, (3 + 3 + 4) * 2, 2);
 		population = new Population(this, net, 50, .03, .3, .7);
 		if (autoGeneratePath) {
 			generateWaypoints(wayPoints, new Vector3(128, 128, 128));
@@ -41,6 +43,10 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	}
 
 	void Update() {
+		float currentDistance = Vector3.Distance(transform.position, flightPath[currentWaypoint].transform.position);
+		if (currentDistance < closestDistance) {
+			closestDistance = currentDistance;
+		}
 		if (Input.GetButtonUp("RESET")) {
 			reset();
 		}
@@ -91,6 +97,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 	public void waypointReached() {
 		print("Waypoint reached!!!");
+		closestDistance = 0f;
 		cumulativeFitness += 1.0;
 		++currentWaypoint;
 		if (currentWaypoint < flightPath.Count) {
@@ -131,6 +138,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 		evaluationStartTime = Time.time;
 		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
 		cumulativeFitness = 0;
+		closestDistance = Vector3.Distance(startPosition.position, flightPath[0].transform.position);
 	}
 
 	private void resetGeneration() {
@@ -145,7 +153,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 
 	public void evaluateFitness(Chromosome chromosome) {
 		if (currentWaypoint < flightPath.Count) {
-			chromosome.setFitness(cumulativeFitness + 1.0 / (1.0 + Vector3.Distance(transform.position, flightPath[currentWaypoint].transform.position)));
+			chromosome.setFitness(cumulativeFitness + 1.0 / (1.0 + closestDistance));
 		} else {
 			chromosome.setFitness(cumulativeFitness);
 		}
