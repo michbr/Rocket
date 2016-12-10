@@ -8,9 +8,9 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	public Transform startPosition;
 
 	public float evaluationTime = 60;
+	public int populationSize = 50;
 	public int wayPoints;
 	public bool autoGeneratePath = true;
-
 
 	public FlightWaypoint wayPointPrefab;
 
@@ -34,7 +34,7 @@ public class EvolutionController : MonoBehaviour, FitnessEvaluator {
 	
 	void Start() { 
 		net = new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, flightController.thrusters, (3 + 3 + 4) * 2, 2);
-		population = new Population(this, net, 50, .03, .3, .7);
+		population = new Population(this, net, populationSize, .03, .3, .7);
 		if (autoGeneratePath) {
 			generateWaypoints(wayPoints, new Vector3(128, 128, 128));
 		}

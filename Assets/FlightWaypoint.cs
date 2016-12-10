@@ -19,7 +19,7 @@ public class FlightWaypoint : MonoBehaviour {
 		if (other.gameObject == target && active) {
 			controller.waypointReached();
 			active = false;
-			GetComponent<Material>().color = Color.red;
+			GetComponent<MeshRenderer>().material.color = Color.red;
 		}
 	}
 }

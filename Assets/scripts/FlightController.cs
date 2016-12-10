@@ -67,6 +67,11 @@ public class FlightController : MonoBehaviour {
 	public void resetVelocity() {
 		rb.velocity = Vector3.zero;
 		rb.angularVelocity = Vector3.zero;
+		foreach (ThrusterController thrusterController in thrusterControllers) {
+			thrusterController.throttle = 0;
+		}
+		rb.Sleep();
+		//print("reset velocity: " + rb.velocity);
 	}
 
 	private void setNeuralInputs() {

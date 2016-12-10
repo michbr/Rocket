@@ -240,22 +240,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!4 &1191902411
+--- !u!4 &1191902411 stripped
 Transform:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 4000014215376686, guid: 95a0b03d691da244dae5c021af817f33,
     type: 2}
   m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children:
-  - {fileID: 556188074}
-  - {fileID: 1398063680}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
 --- !u!1001 &1268053174
 Prefab:
   m_ObjectHideFlags: 0
@@ -316,118 +305,18 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 95a0b03d691da244dae5c021af817f33, type: 2}
-  m_RootGameObject: {fileID: 1358979745}
   m_IsPrefabParent: 0
---- !u!1 &1358979745
+--- !u!1 &1358979745 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 1000012209567712, guid: 95a0b03d691da244dae5c021af817f33,
     type: 2}
   m_PrefabInternal: {fileID: 1268053174}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1191902411}
-  - 33: {fileID: 1358979750}
-  - 136: {fileID: 1358979749}
-  - 23: {fileID: 1358979748}
-  - 114: {fileID: 1358979747}
-  - 54: {fileID: 1358979746}
-  - 114: {fileID: 1358979751}
-  m_Layer: 0
-  m_Name: FlightPlatform
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!54 &1358979746
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 54000013069494412, guid: 95a0b03d691da244dae5c021af817f33,
-    type: 2}
-  m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
---- !u!114 &1358979747
+--- !u!114 &1358979747 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 114000013926697152, guid: 95a0b03d691da244dae5c021af817f33,
     type: 2}
   m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 65c2911ea6fd0b643a32ef1110f10ac0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thrusterControllers: []
-  thrusters: 5
-  centerPoint: {fileID: 1398063680}
-  ThrusterPrefab: {fileID: 1000011506374522, guid: 7f8a19d8087be23478617fe8ab1f6091,
-    type: 2}
-  binaryControl: 0
-  hiddenLayerWidth: 10
-  hiddenLayerCount: 2
---- !u!23 &1358979748
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 23000011030361688, guid: 95a0b03d691da244dae5c021af817f33,
-    type: 2}
-  m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedWireframeHidden: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
---- !u!136 &1358979749
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 136000010967792078, guid: 95a0b03d691da244dae5c021af817f33,
-    type: 2}
-  m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1358979750
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 33000011007796724, guid: 95a0b03d691da244dae5c021af817f33,
-    type: 2}
-  m_PrefabInternal: {fileID: 1268053174}
-  m_GameObject: {fileID: 1358979745}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &1358979751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,6 +331,7 @@ MonoBehaviour:
   flightController: {fileID: 1358979747}
   startPosition: {fileID: 1848069048}
   evaluationTime: 60
+  populationSize: 100
   wayPoints: 500
   autoGeneratePath: 1
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
@@ -540,7 +430,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1560777181}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -215.6, y: -6.4, z: -242.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
