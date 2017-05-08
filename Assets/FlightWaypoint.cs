@@ -3,13 +3,13 @@ using System.Collections;
 
 public class FlightWaypoint : MonoBehaviour {
 
-	private EvolutionController controller;
+	private EvaluationScenario scenario;
 	private GameObject target;
 	private bool active = false;
 
-	public void activate(EvolutionController controller) {
+	public void activate(EvaluationScenario controller) {
 		this.target = controller.gameObject;
-		this.controller = controller;
+		this.scenario = controller;
 		active = true;
 		
 		GetComponent<MeshRenderer>().material.color = Color.green;
@@ -17,7 +17,7 @@ public class FlightWaypoint : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject == target && active) {
-			controller.waypointReached();
+			scenario.waypointReached();
 			active = false;
 			GetComponent<MeshRenderer>().material.color = Color.red;
 		}

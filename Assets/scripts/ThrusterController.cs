@@ -40,9 +40,10 @@ public class ThrusterController : MonoBehaviour {
 	}
 
 	void Update() {
-		Color color = particleControl.startColor;
+		Color color = particleControl.main.startColor.color;
 		color.a = throttle;
-		particleControl.startColor = color;
+		ParticleSystem.MainModule main = particleControl.main;
+		main.startColor = color;
 		if (isFiring) {
 			Debug.DrawLine(transform.position, transform.position + (-(transform.up * (thrustForce * throttle))), Color.blue);
 		}
