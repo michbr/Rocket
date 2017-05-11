@@ -37,7 +37,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4000012290821058}
   - component: {fileID: 33000012645550254}
-  - component: {fileID: 136000013830474824}
   - component: {fileID: 23000013558300776}
   - component: {fileID: 114000012341137866}
   m_Layer: 0
@@ -127,19 +126,6 @@ MonoBehaviour:
   isFiring: 1
   throttle: 1
   thrustForce: 6
---- !u!136 &136000013830474824
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011506374522}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &198000013709795354
 ParticleSystem:
   m_ObjectHideFlags: 1

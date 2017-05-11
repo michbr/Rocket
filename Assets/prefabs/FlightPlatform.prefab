@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4012657981340956}
   - component: {fileID: 33725838378287160}
-  - component: {fileID: 136311985975366668}
   - component: {fileID: 23709515214605660}
   - component: {fileID: 114007778750964978}
   - component: {fileID: 54075897332032270}
@@ -146,16 +145,4 @@ MonoBehaviour:
   binaryControl: 0
   hiddenLayerWidth: 10
   hiddenLayerCount: 2
---- !u!136 &136311985975366668
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1917814833683932}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  targetPos: {x: 0, y: 0, z: 0}
