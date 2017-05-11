@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class FlightController : MonoBehaviour {
@@ -15,7 +16,7 @@ public class FlightController : MonoBehaviour {
 	private NeuralNet brain;
 	private bool AIEnablied = false;
 	private Rigidbody rb;
-	private Vector3 targetPos;
+	public Vector3 targetPos;
 
 	void Start() {
 		rb = GetComponent<Rigidbody>();
@@ -28,7 +29,10 @@ public class FlightController : MonoBehaviour {
 	void Update() {
 		if (Input.GetButtonUp("AI_ON")) {
 			AIEnablied = true;
+			brain = new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, thrusters, (3 + 3 + 4) * 2, 2);
+			brain.setWeights(new Queue<double>(generateRandomWeights(brain.extractWeights().Count)));
 		}
+
 		if (AIEnablied) {
 			setNeuralInputs();
 			List<double> output = brain.calculateOutput();
@@ -40,15 +44,15 @@ public class FlightController : MonoBehaviour {
 				thrusterControllers[i].throttle = newThrottle;
 			}
 		} else {
-			if (Input.GetButton("Jump")) {
-				foreach (ThrusterController thrusterController in thrusterControllers) {
-					thrusterController.firing = true;
-				}
-			} else {
-				foreach (ThrusterController thrusterController in thrusterControllers) {
-					thrusterController.firing = false;
-				}
-			}
+//			if (Input.GetButton("Jump")) {
+//				foreach (ThrusterController thrusterController in thrusterControllers) {
+//					thrusterController.firing = true;
+//				}
+//			} else {
+//				foreach (ThrusterController thrusterController in thrusterControllers) {
+//					thrusterController.firing = false;
+//				}
+//			}
 		}
 	} 
 
@@ -159,4 +163,11 @@ public class FlightController : MonoBehaviour {
 		return Vector3.Cross(a, result);
 	}
 
+	private List<double> generateRandomWeights(int length) {
+		List<double> weights = new List<double>();
+		for (int i = 0; i < length; i++) {
+			weights.Add(Chromosome.generateRandomGene());
+		}
+		return weights;
+	}
 }

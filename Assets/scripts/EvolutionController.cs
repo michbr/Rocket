@@ -5,36 +5,31 @@ using System.IO;
 public class EvolutionController : MonoBehaviour {
 
 	public int populationSize = 50;
-	public int wayPoints;
-	public bool autoGeneratePath = true;
+	public int conncurrentSimulators = 1;
+	public RocketEvaluator simulatorPrefab;
 
-	public RocketEvaluator evaluator {
-		get {
-			if (myEvaluator == null) {
-				myEvaluator = GetComponent<RocketEvaluator>();
-			}
-			return myEvaluator;
-		}
-	}
-
-	private RocketEvaluator myEvaluator;
+	private List<RocketEvaluator> simulators = new List<RocketEvaluator>();
 
 	private Population population;
-	private NeuralNet net;
 
-	private int currentChromosomeIndex = 0;
-	private double totalFitness = 0;
+	private int currentChromosomeIndex;
+	private int chromosomesInEvaluation;
+	private double totalFitness;
 
 	private bool playBest = false;
 
 	private BestEntry currentBest;
 	private List<BestEntry> bests = new List<BestEntry>();
 
-	void Start() { 
-		net = new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, evaluator.getOutputsRequired(), (3 + 3 + 4) * 2, 2);
-		population = new Population(null, net, populationSize, .03, .3, .7);
-		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-		evaluator.startEvaluation(net);
+	void Start() {
+		for (int i = 0; i < conncurrentSimulators; ++i) {
+			RocketEvaluator simulator = Instantiate(simulatorPrefab);
+			simulator.evolutionator = this;
+			simulators.Add(simulator);
+		}
+
+		population = new Population(null, CreateNeuralNet(simulators[0]), populationSize, .03, .3, .7);
+		runEvaluation();
 		//if (autoGeneratePath) {
 //			generateWaypoints(wayPoints, new Vector3(128, 128, 128));
 		//}
@@ -42,41 +37,9 @@ public class EvolutionController : MonoBehaviour {
 //		reset();
 	}
 
-//	void Update() {
-
-//		float currentDistance = Vector3.Distance(transform.position, flightPath[currentWaypoint].transform.position);
-//		if (currentDistance < closestDistance) {
-//			closestDistance = currentDistance;
-//		}
-//		if (Input.GetButtonUp("RESET")) {
-//			reset();
-//		}
-//		if (Input.GetButtonUp("BEST")) {
-//			playBest = true;
-//		}
-//
-//			if (playBest) {
-//				playBest = false;
-//				net.setWeights(new Queue<double>(currentBest.getWeights()));
-//				reset();
-//				print("Replaying best solution. Found in generation " + currentBest.getGeneration() + " fitness: " + currentBest.getFitnessScore());
-//			}
-//			else if (currentChromosomeIndex < population.getChromosomes().Count - 1) {
-//				evaluateFitness(population.getChromosomes()[currentChromosomeIndex]);
-//				totalFitness += population.getChromosomes()[currentChromosomeIndex].getFitness();
-//				++currentChromosomeIndex;
-//				reset();
-//			} else {
-//                evaluateFitness(population.getChromosomes()[currentChromosomeIndex]);
-//				totalFitness += population.getChromosomes()[currentChromosomeIndex].getFitness();
-//
-//				print("total Fitness: " + totalFitness);
-//				population.setTotalFitness(totalFitness);
-//				population.spawnGeneration();
-//				resetGeneration();
-//				reset();
-//			}
-//	}
+	public static NeuralNet CreateNeuralNet(RocketEvaluator evaluator) {
+		return new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, evaluator.getOutputsRequired(), (3 + 3 + 4) * 2, 2);
+	}
 
 	void OnApplicationQuit() {
 		Stream stream = File.Create("RocketData.dat");
@@ -93,38 +56,21 @@ public class EvolutionController : MonoBehaviour {
 		stream.Close();
 	}
 
-
-
-//	private void reset() {
-//
-//		currentWaypoint = 0;
-//		flightPath[0].activate(this);
-////		flightController.setTarget(flightPath[0].transform.position);
-//
-//		evaluationStartTime = Time.time;
-//		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-//		cumulativeFitness = 0;
-//		closestDistance = Vector3.Distance(startPosition.position, flightPath[0].transform.position);
-//	}
-
 	private void startNextGeneration() {
-		totalFitness = 0;
-		currentChromosomeIndex = 0;
+		print("total Fitness: " + totalFitness);
+
 		population.setTotalFitness(totalFitness);
 		population.spawnGeneration();
 
-		net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-		evaluator.startEvaluation(net);
+		currentChromosomeIndex = 0;
+		totalFitness = 0;
+		runEvaluation();
 	}
 
-	public void reportFitness(double fitness) {
-//		if (currentWaypoint < flightPath.Count) {
-//			chromosome.setFitness(cumulativeFitness + 1.0 / (1.0 + closestDistance));
-//		} else {
-//			chromosome.setFitness(cumulativeFitness);
-//		}
+	public void reportFitness(RocketEvaluator evaluator, double fitness, int index) {
 		totalFitness += fitness;
-		Chromosome chromosome = population.getChromosomes()[currentChromosomeIndex];
+		--chromosomesInEvaluation;
+		Chromosome chromosome = population.getChromosomes()[index];
 		chromosome.setFitness(fitness);
 		if (currentBest == null || chromosome.getFitness() > currentBest.getFitnessScore()) {
 
@@ -134,12 +80,29 @@ public class EvolutionController : MonoBehaviour {
 			bests.Add(newBest);
 		}
 
+//		print("current index: " + currentChromosomeIndex);
 		if (currentChromosomeIndex < populationSize - 1) {
+			if (currentChromosomeIndex + chromosomesInEvaluation < populationSize - 1) {
+				evaluateChromosome(currentChromosomeIndex+chromosomesInEvaluation+1, evaluator);
+			}
 			++currentChromosomeIndex;
-			net.setWeights(new Queue<double>(population.getChromosomes()[currentChromosomeIndex].getWeights()));
-			evaluator.startEvaluation(net);
+
 		} else {
+//			print("restart generation");
 			startNextGeneration();
 		}
+	}
+
+	private void runEvaluation() {
+		foreach (RocketEvaluator evaluator in simulators) {
+			evaluateChromosome(currentChromosomeIndex + chromosomesInEvaluation, evaluator);
+		}
+	}
+
+	private void evaluateChromosome(int index, RocketEvaluator evaluator) {
+//		print("evaluate chromosome " + index);
+		Chromosome chromosome = population.getChromosomes()[index];
+		evaluator.startEvaluation(chromosome.getWeights(), index);
+		++chromosomesInEvaluation;
 	}
 }

@@ -1,25 +1,26 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class FlightWaypoint : MonoBehaviour {
+
+	public float waypointSize = 1f;
 
 	private EvaluationScenario scenario;
 	private GameObject target;
 	private bool active = false;
 
-	public void activate(EvaluationScenario controller) {
-		this.target = controller.gameObject;
-		this.scenario = controller;
+	public void activate(EvaluationScenario controller, GameObject target) {
+		this.target = target;
+		scenario = controller;
 		active = true;
 		
 		GetComponent<MeshRenderer>().material.color = Color.green;
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if (other.gameObject == target && active) {
+	void Update() {
+		if (active && target != null && Vector3.Distance(transform.position, target.transform.position) < waypointSize) {
 			scenario.waypointReached();
 			active = false;
-			GetComponent<MeshRenderer>().material.color = Color.red;
+			GetComponent<MeshRenderer>().material.color = Color.blue;
 		}
 	}
 }

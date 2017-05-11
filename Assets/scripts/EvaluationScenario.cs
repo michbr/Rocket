@@ -9,8 +9,8 @@ public abstract class EvaluationScenario : MonoBehaviour {
 	protected RocketEvaluator evaluator;
 	protected FlightController flightController;
 
-	private float timer;
-	private bool started;
+	protected float timer;
+	protected bool started;
 
 	public void startScenario(RocketEvaluator evaluator, FlightController flightController) {
 		this.evaluator = evaluator;

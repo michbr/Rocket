@@ -3,6 +3,7 @@
 public class SingleTargetScenario : EvaluationScenario {
 
 	public Vector3 pos;
+	public bool closestDistanceAtEnd = true;
 	private float closestDistance = 0f;
 
 	private FlightWaypoint waypoint;
@@ -16,22 +17,31 @@ public class SingleTargetScenario : EvaluationScenario {
 	}
 
 	public override void waypointReached() {
+		clearWaypoints();
+		started = false;
 		evaluator.reportScenarioScore(1);
 	}
 
 	protected override void onBegin() {
 		closestDistance = Vector3.Distance(flightController.transform.position, waypoint.transform.position);
 		flightController.setTarget(waypoint.transform.position);
+		waypoint.activate(this, flightController.gameObject);
 	}
 
 	protected override void onTimeout() {
-		scenarioScore += 1.0 / (1.0 + closestDistance);
+		if (!closestDistanceAtEnd) {
+			scenarioScore += 1.0 / (1.0 + closestDistance);
+		} else {
+			scenarioScore += 1.0 / (1.0 + Vector3.Distance(flightController.transform.position, waypoint.transform.position));
+		}
 	}
 
 	protected override void onUpdate() {
-		float currentDistance = Vector3.Distance(flightController.transform.position, waypoint.transform.position);
-		if ( currentDistance < closestDistance) {
-			closestDistance = currentDistance;
+		if (started) {
+			float currentDistance = Vector3.Distance(flightController.transform.position, waypoint.transform.position);
+			if (currentDistance < closestDistance) {
+				closestDistance = currentDistance;
+			}
 		}
 	}
 }

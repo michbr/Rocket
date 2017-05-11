@@ -30,11 +30,12 @@ public class RandomPathScenario : EvaluationScenario {
 
 	public override void waypointReached() {
 		print("Waypoint reached!!!");
+		timer -= 8;
 		closestDistance = 0f;
 		scenarioScore += 1.0;
 		++currentWaypoint;
 		if (currentWaypoint < flightPath.Count) {
-			flightPath[currentWaypoint].activate(this);
+			flightPath[currentWaypoint].activate(this, flightController.gameObject);
 			flightController.setTarget(flightPath[currentWaypoint].transform.position);
 		} else {
 			evaluator.reportScenarioScore(scenarioScore);
@@ -47,6 +48,7 @@ public class RandomPathScenario : EvaluationScenario {
 		currentWaypoint = 0;
 		closestDistance = Vector3.Distance(flightController.transform.position, flightPath[0].transform.position);
 		flightController.setTarget(flightPath[0].transform.position);
+		flightPath[0].activate(this, flightController.gameObject);
 	}
 
 	protected override void onTimeout() {
@@ -54,9 +56,12 @@ public class RandomPathScenario : EvaluationScenario {
 	}
 
 	protected override void onUpdate() {
-		float currentDistance = Vector3.Distance(flightController.transform.position, flightPath[currentWaypoint].transform.position);
-		if ( currentDistance < closestDistance) {
-			closestDistance = currentDistance;
+		if (started) {
+			float currentDistance = Vector3.Distance(flightController.transform.position,
+				flightPath[currentWaypoint].transform.position);
+			if (currentDistance < closestDistance) {
+				closestDistance = currentDistance;
+			}
 		}
 	}
 }

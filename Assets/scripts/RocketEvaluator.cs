@@ -5,33 +5,32 @@ public class RocketEvaluator : MonoBehaviour {
 
 	public FlightController rocketPrefab;
 
-	public Transform startPos;
-
 	public List<EvaluationScenario> scenarios;
 
 	private FlightController testSubject;
-	private NeuralNet brain;
 
-	private double cumulativeFitness = 0;
-	private int currentScenario;
+	private NeuralNet myBrain;
 
-	public EvolutionController evolutionator {
+	private NeuralNet brain {
 		get {
-			if (myEvolutionator == null) {
-				myEvolutionator = GetComponent<EvolutionController>();
-			}
-			return myEvolutionator;
+			if (myBrain == null)
+				myBrain = EvolutionController.CreateNeuralNet(this);
+			return myBrain;
 		}
 	}
 
-	private EvolutionController myEvolutionator;
+	private double cumulativeFitness = 0;
+	private int currentScenario;
+	private int index;
 
-	public void startEvaluation(NeuralNet net) {
-		brain = net;
+	public EvolutionController evolutionator;
+
+	public void startEvaluation(List<double> weights, int index) {
+		brain.setWeights(new Queue<double>(weights));
 		createTestSubject();
 		scenarios[0].startScenario(this, testSubject);
 		cumulativeFitness = 0;
-		print("reset fitness");
+		this.index = index;
 	}
 
 	public int getOutputsRequired() {
@@ -55,11 +54,11 @@ public class RocketEvaluator : MonoBehaviour {
 		cumulativeFitness = 0;
 		currentScenario = 0;
 		Destroy(testSubject.gameObject);
-		evolutionator.reportFitness(lastFitness);
+		evolutionator.reportFitness(this, lastFitness, index);
 	}
 
 	private void createTestSubject() {
-		testSubject = Instantiate(rocketPrefab, startPos.position, startPos.rotation);
+		testSubject = Instantiate(rocketPrefab, transform.position, transform.rotation);
 		testSubject.enableAI(brain);
 	}
 }
