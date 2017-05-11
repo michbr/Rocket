@@ -30,7 +30,7 @@ public class RandomPathScenario : EvaluationScenario {
 
 	public override void waypointReached() {
 		print("Waypoint reached!!!");
-		timer -= 8;
+		timer -= 10;
 		closestDistance = 0f;
 		scenarioScore += 1.0;
 		++currentWaypoint;

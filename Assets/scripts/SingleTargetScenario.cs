@@ -17,9 +17,7 @@ public class SingleTargetScenario : EvaluationScenario {
 	}
 
 	public override void waypointReached() {
-		clearWaypoints();
-		started = false;
-		evaluator.reportScenarioScore(1);
+		scenarioScore += .5;
 	}
 
 	protected override void onBegin() {
