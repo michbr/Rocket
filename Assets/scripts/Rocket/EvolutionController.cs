@@ -30,30 +30,10 @@ public class EvolutionController : MonoBehaviour {
 
 		population = new Population(null, CreateNeuralNet(simulators[0]), populationSize, .03, .3, .7);
 		runEvaluation();
-		//if (autoGeneratePath) {
-//			generateWaypoints(wayPoints, new Vector3(128, 128, 128));
-		//}
-//		flightController.enableAI(net);
-//		reset();
 	}
 
 	public static NeuralNet CreateNeuralNet(RocketEvaluator evaluator) {
 		return new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, evaluator.getOutputsRequired(), (3 + 3 + 4) * 2, 2);
-	}
-
-	void OnApplicationQuit() {
-		Stream stream = File.Create("RocketData.dat");
-		StreamWriter writer = new StreamWriter(stream);
-
-		// write entry data
-		foreach (BestEntry entry in bests) {
-			writer.Write(entry.toString() + '\n');
-		}
-
-		print("writing out rocket entries");
-		// write rocket data
-		writer.Flush();
-		stream.Close();
 	}
 
 	private void startNextGeneration() {

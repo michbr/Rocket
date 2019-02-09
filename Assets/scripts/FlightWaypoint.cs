@@ -4,13 +4,13 @@ public class FlightWaypoint : MonoBehaviour {
 
 	public float waypointSize = 1f;
 
-	private EvaluationScenario scenario;
+	private RocketEvaluationScenario scenario;
 	private GameObject target;
 	private bool active = false;
 
 	public void activate(EvaluationScenario controller, GameObject target) {
 		this.target = target;
-		scenario = controller;
+		scenario = (RocketEvaluationScenario)controller;
 		active = true;
 		
 		GetComponent<MeshRenderer>().material.color = Color.green;

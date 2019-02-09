@@ -52,7 +52,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   populationSize: 100
-  autoGeneratePath: 1
   conncurrentSimulators: 1
   simulatorPrefab: {fileID: 114072822024172244, guid: 5e12601b9a1534f4bb78d449f71e2410,
     type: 2}

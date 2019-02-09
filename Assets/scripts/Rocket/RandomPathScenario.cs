@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomPathScenario : EvaluationScenario {
+public class RandomPathScenario : RocketEvaluationScenario {
 
 	public int pathSize;
 	public Vector3 fieldSize;
@@ -29,14 +29,15 @@ public class RandomPathScenario : EvaluationScenario {
 	}
 
 	public override void waypointReached() {
+		RocketEvaluator rocketEvaluator = (RocketEvaluator)evaluator;
 		print("Waypoint reached!!!");
 		timer -= 10;
 		closestDistance = 0f;
 		scenarioScore += 1.0;
 		++currentWaypoint;
 		if (currentWaypoint < flightPath.Count) {
-			flightPath[currentWaypoint].activate(this, flightController.gameObject);
-			flightController.setTarget(flightPath[currentWaypoint].transform.position);
+			flightPath[currentWaypoint].activate(this, rocketEvaluator.getTestSubject().gameObject);
+			rocketEvaluator.getTestSubject().setTarget(flightPath[currentWaypoint].transform.position);
 		} else {
 			evaluator.reportScenarioScore(scenarioScore);
 			//started = false;
@@ -45,10 +46,11 @@ public class RandomPathScenario : EvaluationScenario {
 	}
 
 	protected override void onBegin() {
+		RocketEvaluator rocketEvaluator = (RocketEvaluator)evaluator;
 		currentWaypoint = 0;
-		closestDistance = Vector3.Distance(flightController.transform.position, flightPath[0].transform.position);
-		flightController.setTarget(flightPath[0].transform.position);
-		flightPath[0].activate(this, flightController.gameObject);
+		closestDistance = Vector3.Distance(rocketEvaluator.getTestSubject().transform.position, flightPath[0].transform.position);
+		rocketEvaluator.getTestSubject().setTarget(flightPath[0].transform.position);
+		flightPath[0].activate(this, rocketEvaluator.getTestSubject().gameObject);
 	}
 
 	protected override void onTimeout() {
@@ -56,8 +58,9 @@ public class RandomPathScenario : EvaluationScenario {
 	}
 
 	protected override void onUpdate() {
+		RocketEvaluator rocketEvaluator = (RocketEvaluator)evaluator;
 		if (started) {
-			float currentDistance = Vector3.Distance(flightController.transform.position,
+			float currentDistance = Vector3.Distance(rocketEvaluator.getTestSubject().transform.position,
 				flightPath[currentWaypoint].transform.position);
 			if (currentDistance < closestDistance) {
 				closestDistance = currentDistance;

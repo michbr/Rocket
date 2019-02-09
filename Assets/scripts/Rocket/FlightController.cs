@@ -8,6 +8,7 @@ public class FlightController : MonoBehaviour {
 	public int thrusters;
 	public Transform centerPoint;
 	public GameObject ThrusterPrefab;
+	public RocketEvaluator evaluator;
 
 	public bool binaryControl = false;
 	public int hiddenLayerWidth = 10;
@@ -29,7 +30,7 @@ public class FlightController : MonoBehaviour {
 	void Update() {
 		if (Input.GetButtonUp("AI_ON")) {
 			AIEnablied = true;
-			brain = new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, thrusters, (3 + 3 + 4) * 2, 2);
+			brain = EvolutionController.CreateNeuralNet(evaluator);
 			brain.setWeights(new Queue<double>(generateRandomWeights(brain.extractWeights().Count)));
 		}
 

@@ -2,43 +2,27 @@
 
 public abstract class EvaluationScenario : MonoBehaviour {
 
-	public FlightWaypoint wayPointPrefab;
 	public float scenarioTime = 10;
 
 	protected double scenarioScore;
-	protected RocketEvaluator evaluator;
-	protected FlightController flightController;
+	protected AbstractEvaluator evaluator;
 
 	protected float timer;
 	protected bool started;
 
-	public void startScenario(RocketEvaluator evaluator, FlightController flightController) {
+	public virtual void startScenario(AbstractEvaluator evaluator) {
 		this.evaluator = evaluator;
-		this.flightController = flightController;
 		timer = 0f;
 		scenarioScore = 0;
 		started = true;
-		generateWaypoints();
 		onBegin();
 	}
 
-	void Update() {
+	public virtual void Update() {
 		if (started) {
-			timer += Time.deltaTime;
-			if (timer > scenarioTime) {
-				onTimeout();
-				evaluator.reportScenarioScore(scenarioScore);
-				clearWaypoints();
-				started = false;
-			} else {
-				onUpdate();
-			}
+			onUpdate ();
 		}
 	}
-
-	public abstract void generateWaypoints();
-	public abstract void clearWaypoints();
-	public abstract void waypointReached();
 
 	protected abstract void onBegin();
 	protected abstract void onTimeout();

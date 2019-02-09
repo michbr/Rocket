@@ -597,7 +597,7 @@ PlayerSettings:
   scriptingDefineSymbols: {}
   platformArchitecture: {}
   scriptingBackend:
-    Standalone: 0
+    Standalone: 1
     WebGL: 1
     WebPlayer: 0
   il2cppCompilerConfiguration: {}
@@ -691,8 +691,8 @@ PlayerSettings:
     Purchasing: 0
     UNet: 0
     Unity_Ads: 0
-  facebookSdkVersion: 
-  apiCompatibilityLevel: 2
+  facebookSdkVersion: 7.9.4
+  apiCompatibilityLevel: 3
   cloudProjectId: 
   projectName: 
   organizationId: 

@@ -56,9 +56,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba2b62de439c6b248bb603e6b0f151f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenarioTime: 10
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
     type: 2}
-  scenarioTime: 10
   pathSize: 100
   fieldSize: {x: 128, y: 128, z: 128}
 --- !u!114 &114072822024172244
@@ -92,9 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1203df5c9052fd4a801004e00202760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenarioTime: 8
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
     type: 2}
-  scenarioTime: 8
   pos: {x: 10, y: 10, z: -10}
   closestDistanceAtEnd: 1
 --- !u!114 &114272730598431244
@@ -108,9 +108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1203df5c9052fd4a801004e00202760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenarioTime: 8
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
     type: 2}
-  scenarioTime: 8
   pos: {x: -10, y: 10, z: -10}
   closestDistanceAtEnd: 1
 --- !u!114 &114566907975461980
@@ -124,9 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1203df5c9052fd4a801004e00202760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenarioTime: 8
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
     type: 2}
-  scenarioTime: 8
   pos: {x: -10, y: 10, z: 10}
   closestDistanceAtEnd: 1
 --- !u!114 &114749155777699684
@@ -140,8 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1203df5c9052fd4a801004e00202760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenarioTime: 8
   wayPointPrefab: {fileID: 114000013800437128, guid: c41bfb93619a09b4f98191c4393b69f4,
     type: 2}
-  scenarioTime: 8
   pos: {x: 10, y: 10, z: 10}
   closestDistanceAtEnd: 1
