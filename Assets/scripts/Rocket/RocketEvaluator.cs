@@ -9,23 +9,15 @@ public class RocketEvaluator : AbstractEvaluator {
 
 	private FlightController testSubject;
 
-	private NeuralNet myBrain;
-
-	private NeuralNet brain {
-		get {
-			if (myBrain == null)
-				myBrain = EvolutionController.CreateNeuralNet(this);
-			return myBrain;
-		}
-	}
+	private GPUNeuralNet brain;
 
 	private double cumulativeFitness = 0;
 	private int currentScenario;
 
 	public EvolutionController evolutionator;
 
-	public override void startEvaluation(List<double> weights, int index) {
-		brain.setWeights(new Queue<double>(weights));
+	public override void startEvaluation(GPUNeuralNet brain, int index) {
+		this.brain = brain;
 		createTestSubject();
 		scenarios[0].startScenario(this);
 		cumulativeFitness = 0;

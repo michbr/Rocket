@@ -6,6 +6,6 @@ public abstract class AbstractEvaluator : MonoBehaviour {
 
 	protected int index;
 
-	public abstract void startEvaluation (List<double> weights, int index);
+	public abstract void startEvaluation (GPUNeuralNet brain, int index);
 	public abstract void reportScenarioScore (double score);
 }

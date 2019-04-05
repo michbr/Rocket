@@ -10,7 +10,6 @@ public class TestScenario : EvaluationScenario {
 	public double expectedOutput;
 
 	protected override void onBegin() {
-		brain = TestEvolutionController.CreateNeuralNet((TestEvaluator)evaluator);
 		brain.setWeights(new Queue<double>(generateRandomWeights(brain.extractWeights().Count)));
 
 	}

@@ -6,22 +6,20 @@ public class Population  {
 	private List<Chromosome> chromosomes = new List<Chromosome>();
 	private double mutationRate;
 	private double crossoverRate;
-	private NeuralNet net;
 
 	private int chromosomeLength;
 	private int populationSize;
 	private double totalFitness;
 	private int generationCount;
-	private double mutationPower;
+	private float mutationPower;
 
-	public Population(FitnessEvaluator fitnessEvaluator, NeuralNet net, int populationSize, double mutationRate, double mutationPower, double crossoverRate) {
+	public Population(FitnessEvaluator fitnessEvaluator, int chromosomeLength, int populationSize, double mutationRate, float mutationPower, double crossoverRate) {
 		this.fitnessEvaluator = fitnessEvaluator;
 		this.mutationRate = mutationRate;
 		this.crossoverRate = crossoverRate;
 		this.populationSize = populationSize;
 		this.mutationPower = mutationPower;
-		chromosomeLength = net.extractWeights().Count;
-		this.net = net;
+		this.chromosomeLength = chromosomeLength;
 		populate();
 	}
 
@@ -117,7 +115,7 @@ public class Population  {
 	}
 
 	private Chromosome generateRandomChromosome() {
-		List<double> weights = new List<double>();
+		List<float> weights = new List<float>();
 		for (int i = 0; i < chromosomeLength; i++) {
 			weights.Add(Chromosome.generateRandomGene());
 		}

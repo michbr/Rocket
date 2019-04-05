@@ -11,10 +11,8 @@ public class FlightController : MonoBehaviour {
 	public RocketEvaluator evaluator;
 
 	public bool binaryControl = false;
-	public int hiddenLayerWidth = 10;
-	public int hiddenLayerCount = 2;
 	
-	private NeuralNet brain;
+	private GPUNeuralNet brain;
 	private bool AIEnablied = false;
 	private Rigidbody rb;
 	public Vector3 targetPos;
@@ -28,20 +26,16 @@ public class FlightController : MonoBehaviour {
 	}
 
 	void Update() {
-		if (Input.GetButtonUp("AI_ON")) {
-			AIEnablied = true;
-			brain = EvolutionController.CreateNeuralNet(evaluator);
-			brain.setWeights(new Queue<double>(generateRandomWeights(brain.extractWeights().Count)));
-		}
+
 
 		if (AIEnablied) {
-			setNeuralInputs();
-			List<double> output = brain.calculateOutput();
-			for(int i = 0; i < output.Count; ++i) {
-				float newThrottle = output[i] < 0 ? 0 : (float)output[i];
+			float[] output = calculateThrusterSettings();
+			for(int i = 0; i < output.Length; ++i) {
+				float newThrottle = output[i] < 0 ? 0 : output[i];
 				if (newThrottle > 1.0f) {
 					newThrottle = 1.0f;
 				}
+				//print(i + ": " + newThrottle);
 				thrusterControllers[i].throttle = newThrottle;
 			}
 		} else {
@@ -61,7 +55,7 @@ public class FlightController : MonoBehaviour {
 		this.targetPos = targetPos;
 	}
 
-	public void enableAI(NeuralNet brain) {
+	public void enableAI(GPUNeuralNet brain) {
 		this.brain = brain;
 		AIEnablied = true;
 		foreach (ThrusterController thruster in thrusterControllers) {
@@ -79,8 +73,8 @@ public class FlightController : MonoBehaviour {
 		//print("reset velocity: " + rb.velocity);
 	}
 
-	private void setNeuralInputs() {
-		List<double> currentThrusterSettings = new List<double>();
+	private float[] calculateThrusterSettings() {
+		List<float> currentThrusterSettings = new List<float>();
 		//print("setting velocity to: " + rb.velocity);
 		currentThrusterSettings.Add(rb.velocity.x);
 		currentThrusterSettings.Add(rb.velocity.y);
@@ -101,10 +95,10 @@ public class FlightController : MonoBehaviour {
 		currentThrusterSettings.Add(transform.rotation.w);
 
 		//foreach (ThrusterController thruster in thrusterControllers) {
-			//print("add thruster value: " + thruster.throttle);
-			//currentThrusterSettings.Add(thruster.throttle);
+		//print("add thruster value: " + thruster.throttle);
+		//currentThrusterSettings.Add(thruster.throttle);
 		//}
-		brain.setInputs(currentThrusterSettings);
+		return brain.run(currentThrusterSettings.ToArray());
 	}
 
 	private Vector3 getDirectionVector() {

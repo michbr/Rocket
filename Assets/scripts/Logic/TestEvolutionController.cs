@@ -15,19 +15,17 @@ public class TestEvolutionController : MonoBehaviour {
 	private int chromosomesInEvaluation;
 	private double totalFitness;
 
+	private GPUNeuralNet brain;
+
 	void Start() {
 		TestEvaluator simulator = Instantiate(simulatorPrefab);
 		simulator.evolutionator = this;
 		simulators.Add(simulator);
 
-		population = new Population(null, CreateNeuralNet(simulators[0]), populationSize, .03, .5, .7);
+
+		population = new Population(null, 2, populationSize, .03, .5f, .7);
 		runEvaluation();
 	}
-
-	public static NeuralNet CreateNeuralNet(TestEvaluator evaluator) {
-		return new NeuralNet(NeuronMode.NEURON, true, 2, evaluator.getOutputsRequired(), 7, 2);
-	}
-
 
 	private void startNextGeneration() {
 		print("total Fitness: " + totalFitness);
@@ -68,7 +66,7 @@ public class TestEvolutionController : MonoBehaviour {
 
 	private void evaluateChromosome(int index, TestEvaluator evaluator) {
 		Chromosome chromosome = population.getChromosomes()[index];
-		evaluator.startEvaluation(chromosome.getWeights(), index);
+		evaluator.startEvaluation(brain, index);
 		++chromosomesInEvaluation;
 	}
 }

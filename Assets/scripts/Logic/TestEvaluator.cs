@@ -8,17 +8,8 @@ public class TestEvaluator : AbstractEvaluator {
 	public List<EvaluationScenario> scenarios;
 
 	private double finalScore;
-	private NeuralNet myBrain;
+	private GPUNeuralNet brain;
 	private int currentScenario;
-
-
-	private NeuralNet brain {
-		get {
-			if (myBrain == null)
-				myBrain = TestEvolutionController.CreateNeuralNet(this);
-			return myBrain;
-		}
-	}
 
 	public override void reportScenarioScore (double score) {
 		finalScore += score;
@@ -32,9 +23,9 @@ public class TestEvaluator : AbstractEvaluator {
 	}
 
 
-	public override void startEvaluation(List<double> weights, int index) {
-		brain.setWeights(new Queue<double>(weights));
+	public override void startEvaluation(GPUNeuralNet brain, int index) {
 		//createTestSubject();
+		this.brain = brain;
 		scenarios[0].startScenario(this);
 		this.index = index;
 	}

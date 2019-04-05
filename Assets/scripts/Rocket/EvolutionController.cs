@@ -15,11 +15,18 @@ public class EvolutionController : MonoBehaviour {
 	private int currentChromosomeIndex;
 	private int chromosomesInEvaluation;
 	private double totalFitness;
-
-	private bool playBest = false;
+	private double bestFitness = 0;
 
 	private BestEntry currentBest;
 	private List<BestEntry> bests = new List<BestEntry>();
+
+	private int inputsRequired = 10;
+	private int layers = 40;
+	private int layerWidth = 11;
+
+	private GPUNeuralNet brain;
+
+	private int currentGeneration = 0;
 
 	void Start() {
 		for (int i = 0; i < conncurrentSimulators; ++i) {
@@ -28,17 +35,23 @@ public class EvolutionController : MonoBehaviour {
 			simulators.Add(simulator);
 		}
 
-		population = new Population(null, CreateNeuralNet(simulators[0]), populationSize, .03, .3, .7);
+		int outputCount = simulators[0].getOutputsRequired();
+		brain = GPUNeuralNet.getInstance(inputsRequired, outputCount, layers, layerWidth);
+		population = new Population(null, inputsRequired + outputCount + (layerWidth*layers*2), populationSize, .03, .3f, .7);
 		runEvaluation();
 	}
 
-	public static NeuralNet CreateNeuralNet(RocketEvaluator evaluator) {
-		return new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, evaluator.getOutputsRequired(), (3 + 3 + 4) * 2, 2);
-	}
+	//public static GPUNeuralNet CreateNeuralNet(RocketEvaluator evaluator) {
+		//return new NeuralNet(NeuronMode.NEURON, true, 3 + 3 + 4, evaluator.getOutputsRequired(), (3 + 3 + 4) * 2, 2);
+		//return GPUNeuralNet.getInstance(evaluator.);
+	//}
 
 	private void startNextGeneration() {
-		print("total Fitness: " + totalFitness);
+		print("Generation "+currentGeneration+" total Fitness: " + totalFitness);
+		print("Best: " + bestFitness);
+		bestFitness = 0;
 
+		++currentGeneration;
 		population.setTotalFitness(totalFitness);
 		population.spawnGeneration();
 
@@ -49,16 +62,12 @@ public class EvolutionController : MonoBehaviour {
 
 	public void reportFitness(RocketEvaluator evaluator, double fitness, int index) {
 		totalFitness += fitness;
+		if (fitness > bestFitness) {
+			bestFitness = fitness;
+		}
 		--chromosomesInEvaluation;
 		Chromosome chromosome = population.getChromosomes()[index];
 		chromosome.setFitness(fitness);
-		if (currentBest == null || chromosome.getFitness() > currentBest.getFitnessScore()) {
-
-			print("recording best fitness as: " + chromosome.getFitness());
-			BestEntry newBest = new BestEntry(population.getCurrentGenerationNumber(), new List<double>(chromosome.getWeights()), chromosome.getFitness());
-			currentBest = newBest;
-			bests.Add(newBest);
-		}
 
 //		print("current index: " + currentChromosomeIndex);
 		if (currentChromosomeIndex < populationSize - 1) {
@@ -82,7 +91,11 @@ public class EvolutionController : MonoBehaviour {
 	private void evaluateChromosome(int index, RocketEvaluator evaluator) {
 //		print("evaluate chromosome " + index);
 		Chromosome chromosome = population.getChromosomes()[index];
-		evaluator.startEvaluation(chromosome.getWeights(), index);
+		List<float>  weights = chromosome.getWeights();
+		int activationThresholdsCount = evaluator.getOutputsRequired() + (layerWidth * layers);
+		int weightsCount = inputsRequired + (layerWidth * layers);
+		brain.load(weights.GetRange(weightsCount, activationThresholdsCount).ToArray(), weights.GetRange(0, weightsCount).ToArray());
+		evaluator.startEvaluation(brain, index);
 		++chromosomesInEvaluation;
 	}
 }

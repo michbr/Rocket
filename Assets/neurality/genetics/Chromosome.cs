@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 
 public class Chromosome : System.IComparable<Chromosome> {
-	private List<double> weights;
+	private List<float> weights;
 	private double fitness; 
 
-	public Chromosome(List<double> weights) {
+	public Chromosome(List<float> weights) {
 		this.weights = weights;
 	}
 
-	public List<double> getWeights() {
+	public List<float> getWeights() {
 		return weights;
 	}
 
@@ -26,7 +26,7 @@ public class Chromosome : System.IComparable<Chromosome> {
 		if (other == this) {
 			return this;
 		} else {
-			List<double> childGenes = new List<double>();
+			List<float> childGenes = new List<float>();
 			for (int i = 0; i < index; ++i) {
 				childGenes.Add(weights[i]);
 			}
@@ -40,10 +40,10 @@ public class Chromosome : System.IComparable<Chromosome> {
 		}
 	}
 
-	public void mutate(double mutationRate, double mutationViolence) {
-		List<double> newWeights = new List<double>();
+	public void mutate(double mutationRate, float mutationViolence) {
+		List<float> newWeights = new List<float>();
 		System.Random random = GlobalRandom.getInstance().getRandom();
-		foreach (double weight in weights) {
+		foreach (float weight in weights) {
 			if (random.NextDouble() < mutationRate) {
 				newWeights.Add(weight + (generateRandomGene() * mutationViolence));
 			} else {
@@ -54,9 +54,9 @@ public class Chromosome : System.IComparable<Chromosome> {
 	}
 
 	public void mutateViolently(double mutationRate) {
-		List<double> newWeights = new List<double>();
+		List<float> newWeights = new List<float>();
 		System.Random random = GlobalRandom.getInstance().getRandom();
-		foreach (double weight in weights) {
+		foreach (float weight in weights) {
 			if (random.NextDouble() < mutationRate) {
 				newWeights.Add(generateRandomGene());
 			} else {
@@ -66,9 +66,9 @@ public class Chromosome : System.IComparable<Chromosome> {
 		weights = newWeights;
 	}
 
-	public static double generateRandomGene() {
+	public static float generateRandomGene() {
 		System.Random random = GlobalRandom.getInstance().getRandom();
-		return random.NextDouble() - random.NextDouble();
+		return (float)random.NextDouble() - (float)random.NextDouble();
 	}
 
 	public int CompareTo(Chromosome other) {
