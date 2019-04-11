@@ -98,11 +98,25 @@ public class FlightController : MonoBehaviour {
 		//print("add thruster value: " + thruster.throttle);
 		//currentThrusterSettings.Add(thruster.throttle);
 		//}
-		return brain.run(currentThrusterSettings.ToArray());
+		float []output = brain.run(currentThrusterSettings.ToArray());
+		/*print("I:"+
+			currentThrusterSettings[0] + " "
+			+ currentThrusterSettings[1] + " "
+			+ currentThrusterSettings[2] + " "
+			+ currentThrusterSettings[3] + " "
+			+ currentThrusterSettings[4] + " "
+			+ currentThrusterSettings[5] + " "
+			+ currentThrusterSettings[6] + " "
+			+ currentThrusterSettings[7] + " "
+			+ currentThrusterSettings[8] + " "
+			+ currentThrusterSettings[9] + " "
+			);*/
+		//print(output.Length + "O:"+output[0] + " " + output[1] + " " + output[2] + " " + output[3] + " " + output[4]);
+		return output;
 	}
 
 	private Vector3 getDirectionVector() {
-		return (targetPos - transform.position).normalized;
+		return (targetPos - transform.position);
 	}
 
 	private void addThrusters() {
