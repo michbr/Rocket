@@ -9,7 +9,7 @@ public class ManualRocketRunner : MonoBehaviour {
 	private FlightController testSubject;
 
 	private int inputsRequired = 10;
-	private int layers = 40;
+	private int layers = 4;
 	private int layerWidth = 11;
 
 	private GPUNeuralNet brain;
@@ -28,14 +28,13 @@ public class ManualRocketRunner : MonoBehaviour {
 		testSubject.enableAI(brain);
 		activationThresholds = createPositiveArray(outputCount + (layers * layerWidth));
 		weights = createArray(inputsRequired + (layerWidth * layers));
-		print(activationThresholds);
 		brain.load(activationThresholds, weights);
 	}
 
 	public float[] createArray(int size) {
 		float[] result = new float[size];
 		for (int i = 0; i < size; ++i) {
-			result[i] = generateRandomPositiveValue();
+			result[i] = generateRandomValue();
 		}
 		return result;
 	}

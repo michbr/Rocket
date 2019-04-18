@@ -35,7 +35,8 @@ public class GPUNeuralNet {
 		this.inputCount = inputCount;
 		this.layers = layers;
 		this.layerWidth = layerWidth;
-		weightsCount = inputCount + (layers * layerWidth);
+		weightsCount = (inputCount + (layers * layerWidth))*layerWidth;
+		
 		activationThresholdsCount = outputCount + (layers * layerWidth);
 
 		if (Inititalize(activationThresholdsCount, weightsCount) != 0) {

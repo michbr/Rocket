@@ -37,7 +37,7 @@ public class EvolutionController : MonoBehaviour {
 
 		int outputCount = simulators[0].getOutputsRequired();
 		brain = GPUNeuralNet.getInstance(inputsRequired, outputCount, layers, layerWidth);
-		population = new Population(null, inputsRequired + outputCount + (layerWidth*layers*2), populationSize, .03, .3f, .7);
+		population = new Population(null, (inputsRequired*layerWidth) + outputCount + (layerWidth*layers)+(layerWidth*layerWidth*layers), populationSize, .03, .3f, .7);
 		runEvaluation();
 	}
 
@@ -93,7 +93,7 @@ public class EvolutionController : MonoBehaviour {
 		Chromosome chromosome = population.getChromosomes()[index];
 		List<float>  weights = chromosome.getWeights();
 		int activationThresholdsCount = evaluator.getOutputsRequired() + (layerWidth * layers);
-		int weightsCount = inputsRequired + (layerWidth * layers);
+		int weightsCount = (inputsRequired + (layerWidth * layers))*layerWidth;
 		brain.load(weights.GetRange(weightsCount, activationThresholdsCount).ToArray(), weights.GetRange(0, weightsCount).ToArray());
 		evaluator.startEvaluation(brain, index);
 		++chromosomesInEvaluation;
